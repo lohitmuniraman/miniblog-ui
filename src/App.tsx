@@ -1,23 +1,23 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext';
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext";
 
 // Layouts
-import MainLayout from '@layouts/MainLayout';
-import AuthLayout from '@layouts/AuthLayout';
+import MainLayout from "@layouts/MainLayout";
+import AuthLayout from "@layouts/AuthLayout";
 
 // Pages
-import NotFoundPage from '@pages/NotFound';
-import RegisterPage from '@pages/RegisterPage';
-import LoginPage from '@pages/LoginPage';
-import PostsPage from '@pages/PostsPage';
-import ProfilePage from '@pages/ProfilePage';
-import CommunityPage from '@pages/CommunityPage';
-import PostDetails from '@pages/PostDetails';
+import NotFoundPage from "@pages/NotFound";
+import RegisterPage from "@pages/RegisterPage";
+import LoginPage from "@pages/LoginPage";
+import PostsPage from "@pages/PostsPage";
+import ProfilePage from "@pages/ProfilePage";
+import CommunityPage from "@pages/CommunityPage";
+import PostDetails from "@pages/PostDetails";
 
 // Components
-import CreatePost from '@components/CreatePost';
-import EditPost from '@components/EditPost';
+import CreatePost from "@components/CreatePost";
+import EditPost from "@components/EditPost";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -34,6 +34,17 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 };
 
 function App() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      navigate("/app/posts");
+    }
+  }, [isAuthenticated]);
+
   return (
     <Routes>
       {/* Public Routes with AuthLayout */}

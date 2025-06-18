@@ -48,18 +48,11 @@ export const getAllUsers = async () => {
   }
 }
 
-export const checkAuthStatus = async (): Promise<User | null> => {
+export const checkAuthStatus = () => {
   const token = localStorage.getItem('authToken');
   if (!token) {
     return null;
-  }
-  try {
-    // You might have an endpoint to validate the token and get user data
-    const response = await api.get('/auth/me');
-    return response.data.user;
-  } catch (error) {
-    console.error('Token validation failed:', error);
-    localStorage.removeItem('authToken');
-    return null;
+  } else {
+    return true
   }
 };

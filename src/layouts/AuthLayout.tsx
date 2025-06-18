@@ -8,7 +8,7 @@ const AuthLayout: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100%' }}>
       <div className='row' style={{ minHeight: '100vh'}}>
-        <div className='col-sm-12 col-xs-12 col-md-6 col-lg-6 col-xl-6 p-0'>
+        <div id='auth-layout-top' className='col-sm-12 col-xs-12 col-md-6 col-lg-6 col-xl-6 p-0'>
           <Box sx={{ backgroundColor: '#ecd8cc', display: 'flex', flexDirection: 'row', minHeight: '100%', justifyContent: 'center', alignItems: 'center' }}>
             <Container style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
               <img src={logo} alt="Logo" />

@@ -34,7 +34,7 @@ npm run build
 ## 🔐 Environment Setup
 Create a .env file in the root with the following:
 ```bash
-VITE_API_BASE_URL=http://localhost:3000
+VITE_API_BASE_URL=http://localhost:6123
 ```
 
 ## 📄 API Reference

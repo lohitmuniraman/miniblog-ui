@@ -23,6 +23,7 @@ import Diversity3Icon from '@mui/icons-material/Diversity3';
 
 import logo from "@assets/memoir.png";
 import { useAuth } from "@contexts/AuthContext";
+import { useToast } from "@contexts/ToastContext";
 
 const drawerWidth = 240;
 
@@ -31,8 +32,11 @@ const MainLayout: React.FC = () => {
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { openToast, handleSetMessage } = useToast();
   
   const handleLogout = () => {
+    handleSetMessage("You have been logged out successfully.");
+    openToast();
     logout();
     navigate("/login");
   };

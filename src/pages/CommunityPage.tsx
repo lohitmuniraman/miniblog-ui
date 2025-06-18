@@ -1,5 +1,13 @@
 import React, { useEffect } from "react";
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 
 import { useAuth } from "@contexts/AuthContext";
 import { User } from "@type/auth";
@@ -41,11 +49,12 @@ const CommunityPage: React.FC = () => {
 
       <Box>
         {users.length > 0 ? (
-          users.map((user) => (
-            <List
-              sx={{ width: "100%", maxWidth: 360 }}
-            >
-              <ListItem sx={{ bgcolor: "rgba(0,0,0,0.02)", mb: 1, borderRadius: 1 }}>
+          <List sx={{ width: "100%", maxWidth: 360 }}>
+            {users.map((user) => (
+              <ListItem
+                sx={{ bgcolor: "rgba(0,0,0,0.02)", mb: 1, borderRadius: 1 }}
+                key={user.userId}
+              >
                 <ListItemAvatar>
                   <Avatar
                     sx={{ bgcolor: "#2b282b", height: "48px", width: "48px" }}
@@ -53,10 +62,15 @@ const CommunityPage: React.FC = () => {
                     .charAt(user.name.length - 1)
                     .toUpperCase()}`}</Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={user.name} secondary={`Joined ${new Date(user.createdAt?.toString() || "").toLocaleDateString()}`} />
+                <ListItemText
+                  primary={user.name}
+                  secondary={`Joined ${new Date(
+                    user.createdAt?.toString() || ""
+                  ).toLocaleDateString()}`}
+                />
               </ListItem>
-            </List>
-          ))
+            ))}
+          </List>
         ) : (
           <Typography variant="body1">
             No users found in the community.

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-import { loginUser, registerUser, logoutUser, checkAuthStatus, getAllUsers } from '@services/authService';
+import { loginUser, registerUser, logoutUser, getAllUsers, checkAuthStatus, getProfile } from '@services/authService';
 import { AuthCredentials, User } from '@type/auth';
 
 interface AuthContextType {
@@ -21,25 +21,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true); // Indicate initial auth check
 
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await checkAuthStatus(); // Check token/session
-        if (currentUser) {
-          setIsAuthenticated(true);
-          setUser(currentUser);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Failed to check auth status:", error);
-        setIsAuthenticated(false);
+    const isValid = checkAuthStatus();
+    
+    if (isValid) {
+      setIsAuthenticated(true);
+      getProfile().then((profile) => {
+        setUser(profile);
+      }).catch(() => {
         setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadUser();
+      });
+    } else {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+    setLoading(false)
   }, []);
 
   const login = async (credentials: AuthCredentials) => {
