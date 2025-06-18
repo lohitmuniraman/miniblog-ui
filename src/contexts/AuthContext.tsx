@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { loginUser, registerUser, logoutUser, checkAuthStatus } from '@services/authService';
+
+import { loginUser, registerUser, logoutUser, checkAuthStatus, getAllUsers } from '@services/authService';
 import { AuthCredentials, User } from '@type/auth';
 
 interface AuthContextType {
@@ -9,6 +10,7 @@ interface AuthContextType {
   login: (credentials: AuthCredentials) => Promise<boolean>;
   register: (credentials: AuthCredentials) => Promise<boolean>;
   logout: () => void;
+  getCommunityUsers: () => Promise<User[]>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,7 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const newUser = await registerUser(credentials);
-      console.log("newUser: ", newUser);
       if (newUser) {
         return true;
       }
@@ -79,6 +80,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getCommunityUsers = async () => {
+    try {
+      const users = await getAllUsers();
+      return users;
+    } catch (error) {
+      console.error("Failed to fetch community users:", error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     logoutUser(); // Clear token/session
     setIsAuthenticated(false);
@@ -86,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, loading, login, register, logout, getCommunityUsers }}>
       {children}
     </AuthContext.Provider>
   );

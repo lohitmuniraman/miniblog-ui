@@ -38,6 +38,16 @@ export const getProfile = async () => {
   }
 }
 
+export const getAllUsers = async () => {
+  try {
+    const response = await api.get('/userList')
+    return response.data
+  } catch (error) {
+    console.error('Get all users error:', error);
+    throw error;
+  }
+}
+
 export const checkAuthStatus = async (): Promise<User | null> => {
   const token = localStorage.getItem('authToken');
   if (!token) {

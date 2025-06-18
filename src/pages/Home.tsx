@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { Typography, Box, Paper } from "@mui/material";
-import { useAuth } from "@contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "@contexts/AuthContext";
 
 const HomePage: React.FC = () => {
   const { user } = useAuth();

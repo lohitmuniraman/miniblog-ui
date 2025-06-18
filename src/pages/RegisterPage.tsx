@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
-import { useAuth } from '@contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+import { useAuth } from '@contexts/AuthContext';
+import { useToast } from '@contexts/ToastContext';
+
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { openToast, handleSetMessage } = useToast();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError('');
     try {
-      const success = await register({ email, password, username });
-      console.log("success: ", success);
+      const success = await register({ email, password, username, name });
       if (success) {
+        handleSetMessage('Registration successful! Please login.');
+        openToast();
+        // Redirect to login page after successful registration
         navigate('/login');
       } else {
         setError('Registration failed. Please try again.');
@@ -34,6 +40,15 @@ const RegisterPage: React.FC = () => {
       <Typography variant="h4" component="h1" gutterBottom textAlign="center">
         Register
       </Typography>
+      <TextField
+        label="Name"
+        type="text"
+        fullWidth
+        margin="normal"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
       <TextField
         label="Email"
         type="email"

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
-import { useAuth } from '@contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+
+import { useAuth } from '@contexts/AuthContext';
+import { useToast } from '@contexts/ToastContext';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -10,15 +12,18 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { openToast, handleSetMessage } = useToast();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError('');
     try {
       const success = await login({ email, password });
-      console.log("success: ", success);
       if (success) {
-        navigate('/app/dashboard');
+        handleSetMessage('Login successful!');
+        openToast();
+        // Redirect to posts page after successful login
+        navigate('/app/posts');
       } else {
         setError('Login failed. Please check your credentials.');
       }

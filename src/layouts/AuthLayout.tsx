@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
+
 import logo from '@assets/memoir.png';
 
 const AuthLayout: React.FC = () => {
@@ -23,11 +24,6 @@ const AuthLayout: React.FC = () => {
         </div>
       </div>
     </Box>
-    // <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', justifyContent: 'center', alignItems: 'center' }}>
-    //   <Container maxWidth="sm" sx={{ p: 3, my: 4, backgroundColor: 'white', borderRadius: 2, boxShadow: 3 }}>
-    //     <Outlet /> {/* Renders child routes like login/register */}
-    //   </Container>
-    // </Box>
   );
 };
 

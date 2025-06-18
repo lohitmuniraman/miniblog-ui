@@ -18,8 +18,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import SettingsIcon from '@mui/icons-material/Settings';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 
 import logo from "@assets/memoir.png";
 import { useAuth } from "@contexts/AuthContext";
@@ -39,26 +39,22 @@ const MainLayout: React.FC = () => {
 
   const menuList = [
     {
-      name: "Dashboard",
-      navigateTo: "dashboard",
+      name: "Posts",
       icon: <DashboardIcon />,
-      onClick: () => navigate(`/app/dashboard`),
+      onClick: () => navigate('/app/posts'),
     },
     {
       name: "Profile",
-      navigateTo: "profile",
       icon: <AccountBoxIcon />,
-      onClick: () => navigate(`/app/profile`),
+      onClick: () => navigate('/app/profile'),
     },
     {
-      name: "Settings",
-      navigateTo: "settings",
-      icon: <SettingsIcon />,
-      onClick: () => navigate(`/app/settings`),
+      name: "Community",
+      icon: <Diversity3Icon />,
+      onClick: () => navigate('/app/community'),
     },
     {
       name: "Logout",
-      navigateTo: "logout",
       icon: <PowerSettingsNewIcon />,
       onClick: () => handleLogout(),
     },
@@ -93,7 +89,7 @@ const MainLayout: React.FC = () => {
           variant="h6"
           component="div"
           sx={{ cursor: "pointer", color: "#2b282b" }}
-          onClick={() => navigate("/app/dashboard")}
+          onClick={() => navigate("/app/posts")}
         >
           <img height={"150px"} width={"150px"} src={logo} alt="Logo" />
         </Typography>
@@ -116,13 +112,6 @@ const MainLayout: React.FC = () => {
   );
 
   return (
-    // <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#ecd8cc' }}>
-    //   <Header />
-    //   <Container component="main" sx={{ flexGrow: 1, py: 4 }} style={{ minHeight: '100vh' }}>
-    //     <Outlet />
-    //   </Container>
-    // </Box>
-
     <Box
       sx={{ display: "flex", backgroundColor: "#ecd8cc", minHeight: "100vh" }}
     >

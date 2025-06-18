@@ -1,18 +1,23 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext'; // Custom auth hook
+import { useAuth } from './contexts/AuthContext';
 
 // Layouts
 import MainLayout from '@layouts/MainLayout';
 import AuthLayout from '@layouts/AuthLayout';
 
 // Pages
-import HomePage from '@pages/Home';
 import NotFoundPage from '@pages/NotFound';
 import RegisterPage from '@pages/RegisterPage';
 import LoginPage from '@pages/LoginPage';
-import DashboardPage from '@pages/DashboardPage';
+import PostsPage from '@pages/PostsPage';
 import ProfilePage from '@pages/ProfilePage';
+import CommunityPage from '@pages/CommunityPage';
+import PostDetails from '@pages/PostDetails';
+
+// Components
+import CreatePost from '@components/CreatePost';
+import EditPost from '@components/EditPost';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -22,7 +27,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading authentication...</div>; // Or a dedicated LoadingSpinner component
+    return <div>Loading authentication...</div>;
   }
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
@@ -33,7 +38,6 @@ function App() {
     <Routes>
       {/* Public Routes with AuthLayout */}
       <Route path="/" element={<AuthLayout />}>
-        <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
       </Route>
@@ -47,10 +51,12 @@ function App() {
           </PrivateRoute>
         }
       >
-        {/* <Route index element={<DashboardPage />} /> */}
-        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="posts" element={<PostsPage />} />
+        <Route path="posts/:postId" element={<PostDetails />} />
+        <Route path="create-post" element={<CreatePost />} />
+        <Route path="edit-post/:postId" element={<EditPost />} />
         <Route path="profile" element={<ProfilePage />} />
-        {/* Add more private routes here */}
+        <Route path="community" element={<CommunityPage />} />
       </Route>
 
       {/* Catch-all for 404 */}
