@@ -18,6 +18,8 @@ import PostDetails from "@pages/PostDetails";
 // Components
 import CreatePost from "@components/CreatePost";
 import EditPost from "@components/EditPost";
+import UserUpdatePage from "@pages/UserUpdatePage";
+import ResetPasswordPage from "@pages/ResetPassword";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -51,6 +53,7 @@ function App() {
       <Route path="/" element={<AuthLayout />}>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
       </Route>
 
       {/* Private Routes with MainLayout */}
@@ -68,6 +71,10 @@ function App() {
         <Route path="edit-post/:postId" element={<EditPost />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="community" element={<CommunityPage />} />
+        <Route path="user-management">
+          <Route index element={<CommunityPage />} />
+          <Route path=":userId" element={<UserUpdatePage />} />
+        </Route>
       </Route>
 
       {/* Catch-all for 404 */}

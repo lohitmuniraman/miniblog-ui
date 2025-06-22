@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, TextField, Button, Typography, IconButton } from "@mui/material";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import CancelIcon from '@mui/icons-material/Cancel';
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import { editPost, getPost } from "@services/blogService";
 import { useToast } from "@contexts/ToastContext";
@@ -12,7 +12,7 @@ const EditPost: React.FC = () => {
   const navigate = useNavigate();
   const { openToast, handleSetMessage } = useToast();
   const { postId } = useParams<{ postId: string }>();
-  const [searchParams, ] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/app/posts";
 
   useEffect(() => {
@@ -30,8 +30,7 @@ const EditPost: React.FC = () => {
     if (response) {
       handleSetMessage("Post updated successfully!");
       openToast();
-      // Redirect to posts page after successful post creation
-      navigate("/app/posts");
+      navigate(redirectTo);
     }
   };
 
@@ -42,14 +41,14 @@ const EditPost: React.FC = () => {
           Edit Post
         </Typography>
         <div>
-            <IconButton
-          aria-label="create-post"
-          size="medium"
-          sx={{ color: "#2b282b" }}
-          onClick={() => navigate(redirectTo, { replace: true })}
-        >
-          <CancelIcon />
-        </IconButton>
+          <IconButton
+            aria-label="create-post"
+            size="medium"
+            sx={{ color: "#2b282b" }}
+            onClick={() => navigate(redirectTo, { replace: true })}
+          >
+            <CancelIcon />
+          </IconButton>
         </div>
       </div>
       <TextField

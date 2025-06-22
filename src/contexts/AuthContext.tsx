@@ -1,13 +1,28 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 
-import { loginUser, registerUser, logoutUser, getAllUsers, checkAuthStatus, getProfile } from '@services/authService';
-import { AuthCredentials, User } from '@type/auth';
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  getAllUsers,
+  checkAuthStatus,
+  getProfile,
+} from "@services/authService";
+import { AuthCredentials, User } from "@type/auth";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   loading: boolean;
-  login: (credentials: AuthCredentials) => Promise<boolean>;
+  login: (
+    credentials: AuthCredentials
+  ) => Promise<{ success: boolean; resetPassword?: boolean }>;
   register: (credentials: AuthCredentials) => Promise<boolean>;
   logout: () => void;
   getCommunityUsers: () => Promise<User[]>;
@@ -22,19 +37,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const isValid = checkAuthStatus();
-    
+
     if (isValid) {
       setIsAuthenticated(true);
-      getProfile().then((profile) => {
-        setUser(profile);
-      }).catch(() => {
-        setUser(null);
-      });
+      getProfile()
+        .then((profile) => {
+          setUser(profile);
+        })
+        .catch(() => {
+          setUser(null);
+        });
     } else {
       setIsAuthenticated(false);
       setUser(null);
     }
-    setLoading(false)
+    setLoading(false);
   }, []);
 
   const login = async (credentials: AuthCredentials) => {
@@ -44,14 +61,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (loggedInUser) {
         setIsAuthenticated(true);
         setUser(loggedInUser);
-        return true;
+        return { success: true, resetPassword: loggedInUser.resetPassword };
       }
-      return false;
+      return { success: false };
     } catch (error) {
       console.error("Login failed:", error);
       setIsAuthenticated(false);
       setUser(null);
-      return false;
+      return { success: false };
     } finally {
       setLoading(false);
     }
@@ -92,7 +109,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, loading, login, register, logout, getCommunityUsers }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        getCommunityUsers,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -101,7 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

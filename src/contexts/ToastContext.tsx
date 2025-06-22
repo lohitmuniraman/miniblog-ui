@@ -33,7 +33,6 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     if (reason === "clickaway") {
       return;
     }
-    console.info("Toast event:", event);
     
     setOpen(false);
   };
@@ -60,7 +59,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        autoHideDuration={5000}
+        autoHideDuration={3000}
         onClose={handleClose}
         message={message}
         action={action}

@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
     event.preventDefault();
     setError('');
     try {
-      const success = await register({ email, password, username, name });
+      const success = await register({ email, password, username, name, isAdmin: false });
       if (success) {
         handleSetMessage('Registration successful! Please login.');
         openToast();

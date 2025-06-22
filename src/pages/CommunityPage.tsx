@@ -2,25 +2,30 @@ import React, { useEffect } from "react";
 import {
   Avatar,
   Box,
+  IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Typography,
 } from "@mui/material";
+import EditSquareIcon from '@mui/icons-material/EditSquare';
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@contexts/AuthContext";
 import { User } from "@type/auth";
 
 const CommunityPage: React.FC = () => {
-  const { getCommunityUsers } = useAuth();
+  const { getCommunityUsers, user: loggedInUser } = useAuth();
   const [users, setUsers] = React.useState<User[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const communityUsers = await getCommunityUsers();
-        setUsers(communityUsers);
+        const filteredList = loggedInUser?.isAdmin ? communityUsers.filter(user => (!user.isAdmin)) : communityUsers;
+        setUsers(filteredList);
       } catch (error) {
         console.error("Failed to fetch community users:", error);
       }
@@ -32,20 +37,24 @@ const CommunityPage: React.FC = () => {
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>
-        Community
+        {loggedInUser?.isAdmin ? "User Management" : "Community"}
       </Typography>
       <hr />
 
-      <Box>
-        <Typography variant="h6" component="h2" gutterBottom>
-          Welcome to the Community Page!
-        </Typography>
-        <Typography variant="body1">
-          This is a space where you can connect with other users, share ideas,
-          and discuss topics of interest.
-        </Typography>
-      </Box>
-      <hr />
+      {!loggedInUser?.isAdmin ? (
+        <>
+          <Box>
+            <Typography variant="h6" component="h2" gutterBottom>
+              Welcome to the Community Page!
+            </Typography>
+            <Typography variant="body1">
+              This is a space where you can connect with other users, share
+              ideas, and discuss topics of interest.
+            </Typography>
+          </Box>
+          <hr />
+        </>
+      ) : null}
 
       <Box>
         {users.length > 0 ? (
@@ -54,6 +63,13 @@ const CommunityPage: React.FC = () => {
               <ListItem
                 sx={{ bgcolor: "rgba(0,0,0,0.02)", mb: 1, borderRadius: 1 }}
                 key={user.userId}
+                secondaryAction={
+                  loggedInUser?.isAdmin ? (
+                    <IconButton onClick={(() => navigate(`/app/user-management/${user.userId}`))}>
+                      <EditSquareIcon />
+                    </IconButton>
+                  ) : <></>
+                }
               >
                 <ListItemAvatar>
                   <Avatar

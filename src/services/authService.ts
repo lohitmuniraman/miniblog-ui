@@ -28,9 +28,9 @@ export const logoutUser = (): void => {
   localStorage.removeItem('authToken');
 };
 
-export const getProfile = async () => {
+export const getProfile = async (): Promise<User> => {
   try {
-    const response = await api.get('/profile')
+    const response = await api.get('/user')
     return response.data
   } catch (error) {
     console.error('Get profile error:', error);
@@ -38,9 +38,29 @@ export const getProfile = async () => {
   }
 }
 
-export const getAllUsers = async () => {
+export const getUser = async (userId: string = ""): Promise<User> => {
   try {
-    const response = await api.get('/userList')
+    const response = await api.get(`/user/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error('Get profile error:', error);
+    throw error;
+  }
+}
+
+export const updateUser = async (userData: User) => {
+  try {
+    const response = await api.patch(`/user`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Update user error:', error);
+    throw error;
+  }
+}
+
+export const getAllUsers = async (): Promise<User[]> => {
+  try {
+    const response = await api.get('/users')
     return response.data
   } catch (error) {
     console.error('Get all users error:', error);

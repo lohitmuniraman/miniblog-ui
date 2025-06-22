@@ -3,6 +3,8 @@ export interface User {
   email: string;
   username: string;
   name: string;
+  isAdmin?: boolean;
+  resetPassword?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -12,4 +14,5 @@ export interface AuthCredentials {
   password: string;
   name?: string;
   username?: string;
+  isAdmin?: boolean;
 }

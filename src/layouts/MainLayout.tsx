@@ -31,7 +31,7 @@ const MainLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { openToast, handleSetMessage } = useToast();
   
   const handleLogout = () => {
@@ -45,17 +45,18 @@ const MainLayout: React.FC = () => {
     {
       name: "Posts",
       icon: <DashboardIcon />,
-      onClick: () => navigate('/app/posts'),
+      onClick: () => navigate("/app/posts"),
     },
     {
       name: "Profile",
       icon: <AccountBoxIcon />,
-      onClick: () => navigate('/app/profile'),
+      onClick: () => navigate("/app/profile"),
     },
     {
-      name: "Community",
+      name: user?.isAdmin ? "User Management" : "Community",
       icon: <Diversity3Icon />,
-      onClick: () => navigate('/app/community'),
+      onClick: () =>
+        navigate(user?.isAdmin ? "/app/user-management" : "/app/community"),
     },
     {
       name: "Logout",

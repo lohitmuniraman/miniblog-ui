@@ -20,8 +20,7 @@ const CreatePost: React.FC = () => {
       setText("");
       handleSetMessage("Post created successfully!");
       openToast();
-      // Redirect to posts page after successful post creation
-      navigate("/app/posts");
+      navigate(redirectTo);
     }
   };
 
