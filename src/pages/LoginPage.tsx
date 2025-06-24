@@ -19,16 +19,21 @@ const LoginPage: React.FC = () => {
     setError('');
     try {
       const response = await login({ email, password });
-      if (response.resetPassword) {
-        navigate('/reset-password', {
+      if (response?.isSuspended) {
+        handleSetMessage(response.message ?? '');
+        openToast();
+      } else if (response?.resetPassword) {
+        handleSetMessage(response.message ?? '');
+        openToast();
+        navigate("/reset-password", {
           state: { email },
         });
-      } else if (response.success) {
+      }  else if (response.success) {
         handleSetMessage('Login successful!');
         openToast();
-        // Redirect to posts page after successful login
         navigate('/app/posts');
-      } else {
+      } 
+      else {
         setError('Login failed. Please check your credentials.');
       }
     } catch (err) {

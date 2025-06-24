@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import {
-  Avatar,
   Box,
   IconButton,
   List,
@@ -9,11 +8,12 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import EditSquareIcon from '@mui/icons-material/EditSquare';
+import EditSquareIcon from "@mui/icons-material/EditSquare";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@contexts/AuthContext";
 import { User } from "@type/auth";
+import UserAvatar from "@components/common/UserAvatar";
 
 const CommunityPage: React.FC = () => {
   const { getCommunityUsers, user: loggedInUser } = useAuth();
@@ -24,7 +24,9 @@ const CommunityPage: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const communityUsers = await getCommunityUsers();
-        const filteredList = loggedInUser?.isAdmin ? communityUsers.filter(user => (!user.isAdmin)) : communityUsers;
+        const filteredList = loggedInUser?.isAdmin
+          ? communityUsers.filter((user) => !user.isAdmin)
+          : communityUsers;
         setUsers(filteredList);
       } catch (error) {
         console.error("Failed to fetch community users:", error);
@@ -65,18 +67,20 @@ const CommunityPage: React.FC = () => {
                 key={user.userId}
                 secondaryAction={
                   loggedInUser?.isAdmin ? (
-                    <IconButton onClick={(() => navigate(`/app/user-management/${user.userId}`))}>
+                    <IconButton
+                      onClick={() =>
+                        navigate(`/app/user-management/${user.userId}`)
+                      }
+                    >
                       <EditSquareIcon />
                     </IconButton>
-                  ) : <></>
+                  ) : (
+                    <></>
+                  )
                 }
               >
                 <ListItemAvatar>
-                  <Avatar
-                    sx={{ bgcolor: "#2b282b", height: "48px", width: "48px" }}
-                  >{`${user.name.charAt(0)} ${user.name
-                    .charAt(user.name.length - 1)
-                    .toUpperCase()}`}</Avatar>
+                  <UserAvatar name={user.name} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={user.name}

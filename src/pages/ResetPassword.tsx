@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Button, Typography, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "@contexts/AuthContext";
 import { useToast } from "@contexts/ToastContext";
@@ -10,26 +10,36 @@ const ResetPasswordPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { callResetPassword } = useAuth();
   const navigate = useNavigate();
   const { openToast, handleSetMessage } = useToast();
+  const [showError, setShowError] = useState(false);
+  const { state } = useLocation();
+
+  useEffect(() => {
+    setEmail(state.email);
+  }, [state]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
     try {
-      const success = await login({ email, password });
-      if (success) {
-        handleSetMessage("Login successful!");
-        openToast();
-        // Redirect to posts page after successful login
-        navigate("/app/posts");
+      if (password !== confirmPassword) {
+        setShowError(true);
+        setError("Passwords not matching");
       } else {
-        setError("Login failed. Please check your credentials.");
+        const response = await callResetPassword({ email, password });
+        if (response) {
+          handleSetMessage(response.message);
+          openToast();
+          navigate("/login");
+        } else {
+          setError("Password reset failed. Try again!");
+        }
       }
-    } catch (err) {
+    } catch (error) {
       setError("An unexpected error occurred. Please try again.");
-      console.error(err);
+      console.error(error);
     }
   };
 
@@ -65,6 +75,7 @@ const ResetPasswordPage: React.FC = () => {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         required
+        error={showError}
       />
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>

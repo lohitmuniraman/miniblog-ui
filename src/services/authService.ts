@@ -1,13 +1,13 @@
 import api from '@config/api';
 import { AuthCredentials, User } from '@type/auth';
 
-export const loginUser = async (credentials: AuthCredentials): Promise<User | null> => {
+export const loginUser = async (credentials: AuthCredentials): Promise<{ success: boolean, data: any }> => {
   try {
     const response = await api.post('/login', credentials);
     const { token, user } = response.data;
-    localStorage.setItem('authToken', token);
-    return user;
-  } catch (error) {
+    return { success: true, data: { token, user } };
+  } catch (error: any) {
+    if (error.status === 400 || error.status === 403 || error.status === 404) { return { success: false, data: error.response.data } }
     console.error('Login error:', error);
     throw error;
   }
@@ -76,3 +76,13 @@ export const checkAuthStatus = () => {
     return true
   }
 };
+
+export const resetPassword = async (userCredentials: AuthCredentials) => {
+  try {
+    const response = await api.patch(`/reset-password`, userCredentials);
+    return response.data;
+  } catch (error) {
+    console.error('Update user error:', error);
+    throw error;
+  }
+}

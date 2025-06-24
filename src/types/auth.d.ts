@@ -5,6 +5,7 @@ export interface User {
   name: string;
   isAdmin?: boolean;
   resetPassword?: boolean;
+  isSuspended?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

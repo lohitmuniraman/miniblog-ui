@@ -45,6 +45,12 @@ const PostDetails: React.FC = () => {
     }
   };
 
+  const canShare = () => {
+    if (blog.parentBlogId) return false;
+    if (blog.userId === user?.userId) return false;
+    return true;
+  };
+
   return (
     <Box
       sx={{
@@ -74,7 +80,12 @@ const PostDetails: React.FC = () => {
           <Typography
             variant="caption"
             component="p"
-            onClick={() => navigate(`/app/posts/${blog.parentBlogId}?redirectTo=/app/posts`, { replace: true })}
+            onClick={() =>
+              navigate(
+                `/app/posts/${blog.parentBlogId}?redirectTo=/app/posts`,
+                { replace: true }
+              )
+            }
             sx={{ cursor: "pointer" }}
           >{`Original by @${blog.parentUsername}`}</Typography>
         ) : null}
@@ -95,7 +106,7 @@ const PostDetails: React.FC = () => {
       <hr />
 
       <div className="d-flex justify-content-between">
-        {user?.userId !== blog.userId ? (
+        {canShare() ? (
           <IconButton
             aria-label="create-post-cancel"
             size="medium"

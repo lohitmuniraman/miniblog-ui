@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Avatar,
   Button,
   Card,
   CardActions,
@@ -16,6 +15,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { Blog } from "@type/blogs";
 import { useAuth } from "@contexts/AuthContext";
+import UserAvatar from "./UserAvatar";
 
 const BlogComponent = ({
   blog,
@@ -38,22 +38,22 @@ const BlogComponent = ({
 
   const handleEdit = () => {
     handleClose();
-    // Navigate to edit post page
     navigate(`/app/edit-post/${blog._id}?redirectTo=${redirectTo}`);
+  };
+
+  const canEdit = () => {
+    if (blog.parentBlogId) return false;
+    if (user?.username === blog.username) return true;
+
+    return false;
   };
 
   return (
     <Card sx={{ maxWidth: 345, backgroundColor: "rgba(0, 0, 0, 0.02)" }}>
       <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: "#2b282b" }} aria-label="recipe">
-            {`${blog.name.charAt(0)} ${blog.name
-              .charAt(blog.name.length - 1)
-              .toUpperCase()}`}
-          </Avatar>
-        }
+        avatar={<UserAvatar name={blog.name.toString()} />}
         action={
-          user?.username === blog.username ? (
+          canEdit() ? (
             <IconButton aria-label="settings" onClick={handleClick}>
               <MoreVertIcon />
             </IconButton>
@@ -66,11 +66,9 @@ const BlogComponent = ({
             to={`/app/posts/${blog._id}?redirectTo=${redirectTo}`}
             sx={{ textDecoration: "none", color: "#2b282b" }}
           >
-            {
-                blog.title.length > 50
-                  ? `${blog.title.substring(0, 50)}...`
-                  : blog.title
-            }
+            {blog.title.length > 50
+              ? `${blog.title.substring(0, 50)}...`
+              : blog.title}
           </Typography>
         }
         subheader={blog.name ? `@${blog.username}` : null}
@@ -89,7 +87,10 @@ const BlogComponent = ({
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
       </Menu>
       <CardContent>
-        <Typography variant="body2" sx={{ color: "text.secondary", textAlign: "justify" }}>
+        <Typography
+          variant="body2"
+          sx={{ color: "text.secondary", textAlign: "justify" }}
+        >
           {blog.text.length > 200
             ? `${blog.text.substring(0, 200)}...`
             : blog.text}
@@ -97,7 +98,14 @@ const BlogComponent = ({
       </CardContent>
       <CardActions>
         {blog.text.length > 200 ? (
-          <Button onClick={() => navigate(`/app/posts/${blog._id}?redirectTo=${redirectTo}`)} size="small">Show More</Button>
+          <Button
+            onClick={() =>
+              navigate(`/app/posts/${blog._id}?redirectTo=${redirectTo}`)
+            }
+            size="small"
+          >
+            Show More
+          </Button>
         ) : null}
       </CardActions>
     </Card>

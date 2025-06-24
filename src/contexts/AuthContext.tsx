@@ -13,19 +13,25 @@ import {
   getAllUsers,
   checkAuthStatus,
   getProfile,
+  resetPassword,
 } from "@services/authService";
 import { AuthCredentials, User } from "@type/auth";
+import { ERROR_CODE } from "@constants/index";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   loading: boolean;
-  login: (
-    credentials: AuthCredentials
-  ) => Promise<{ success: boolean; resetPassword?: boolean }>;
+  login: (credentials: AuthCredentials) => Promise<{
+    success: boolean;
+    resetPassword?: boolean;
+    isSuspended?: boolean;
+    message?: string;
+  }>;
   register: (credentials: AuthCredentials) => Promise<boolean>;
   logout: () => void;
   getCommunityUsers: () => Promise<User[]>;
+  callResetPassword: (credentials: AuthCredentials) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,11 +63,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (credentials: AuthCredentials) => {
     setLoading(true);
     try {
-      const loggedInUser = await loginUser(credentials);
-      if (loggedInUser) {
-        setIsAuthenticated(true);
-        setUser(loggedInUser);
-        return { success: true, resetPassword: loggedInUser.resetPassword };
+      const { success, data } = await loginUser(credentials);
+      switch (success) {
+        case false: {
+          if (data.errorCode === ERROR_CODE.USER_SUSPENDED) {
+            return { success: false, isSuspended: true, message: data?.message };
+          }
+          if (data.errorCode === ERROR_CODE.RESET_PASSWORD) {
+            return { success: false, resetPassword: true, message: data?.message };
+          }
+          if (data.errorCode === ERROR_CODE.INVALID_CREDENTIALS) {
+            return { success: false, message: data?.message };
+          }
+          break;
+        }
+        case true: {
+          localStorage.setItem("authToken", data.token);
+          setIsAuthenticated(true);
+          setUser(data.user);
+          return { success: true };
+        }
+        default:
+          return { success: false };
       }
       return { success: false };
     } catch (error) {
@@ -102,6 +125,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const callResetPassword = async (credentials: AuthCredentials) => {
+    try {
+      const response = await resetPassword(credentials);
+      return response;
+    } catch (error) {
+      console.error("Failed to fetch community users:", error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     logoutUser(); // Clear token/session
     setIsAuthenticated(false);
@@ -118,6 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         logout,
         getCommunityUsers,
+        callResetPassword,
       }}
     >
       {children}

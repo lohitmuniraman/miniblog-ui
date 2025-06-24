@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Typography,
   Box,
-  Avatar,
   List,
   ListItem,
   ListItemAvatar,
@@ -16,6 +15,7 @@ import { getProfile } from "@services/authService";
 import { Blog } from "@type/blogs";
 import { getAllOfMyPosts } from "@services/blogService";
 import BlogComponent from "@components/common/Blog";
+import UserAvatar from "@components/common/UserAvatar";
 
 const ProfilePage: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -49,7 +49,9 @@ const ProfilePage: React.FC = () => {
               aria-label="create-post"
               size="large"
               sx={{ color: "#2b282b" }}
-              onClick={() => navigate("/app/create-post?redirectTo=/app/profile")}
+              onClick={() =>
+                navigate("/app/create-post?redirectTo=/app/profile")
+              }
             >
               <AddCircleIcon />
             </IconButton>
@@ -57,11 +59,7 @@ const ProfilePage: React.FC = () => {
           alignItems="flex-start"
         >
           <ListItemAvatar>
-            <Avatar
-              sx={{ bgcolor: "#2b282b", height: "48px", width: "48px" }}
-            >{`${name.charAt(0)} ${name
-              .charAt(name.length - 1)
-              .toUpperCase()}`}</Avatar>
+            <UserAvatar name={name} />
           </ListItemAvatar>
           <ListItemText
             primary={name}
@@ -88,7 +86,7 @@ const ProfilePage: React.FC = () => {
               className="col-12 col-md-6 col-lg-4 mb-4"
               key={blog._id?.toString()}
             >
-              <BlogComponent blog={blog} redirectTo="/app/profile"/>
+              <BlogComponent blog={blog} redirectTo="/app/profile" />
             </div>
           ))}
         </div>

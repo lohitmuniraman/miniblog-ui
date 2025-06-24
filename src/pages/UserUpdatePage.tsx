@@ -1,4 +1,12 @@
-import { Box, Button, Checkbox, FormControlLabel, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,41 +19,45 @@ const UserUpdatePage: React.FC = () => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [id, setId] = useState("");
   const [resetPassword, setResetPassword] = useState(false);
+  const [suspendUser, setSuspendUser] = useState(false);
+
   const [userData, setUserData] = useState<User>({} as User);
   const navigate = useNavigate();
   const { userId } = useParams();
   const { openToast, handleSetMessage } = useToast();
 
   useEffect(() => {
-    getUser(userId)
-      .then((user) => {
-        if (user) {
-          setId(user.userId);
-          setName(user.name);
-          setUsername(user.username);
-          setEmail(user.email);
-          setUserData(user);
-          setResetPassword(user.resetPassword || false);
-        } else {
+    if (userId) {
+      getUser(userId)
+        .then((user) => {
+          if (user) {
+            setName(user.name);
+            setUsername(user.username);
+            setEmail(user.email);
+            setUserData(user);
+            setResetPassword(user.resetPassword || false);
+            setSuspendUser(user.isSuspended || false);
+          } else {
+            navigate("/app/user-management");
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user data:", error);
           navigate("/app/user-management");
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to fetch user data:", error);
-        navigate("/app/user-management");
-      });
+        });
+    }
   }, []);
 
   const callUpdateUser = async () => {
     updateUser({
-      userId: id,
+      userId: userId ?? "",
       name,
       username,
       email,
       isAdmin: userData.isAdmin,
-      resetPassword
+      resetPassword,
+      isSuspended: suspendUser
     })
       .then((response) => {
         handleSetMessage(response.message || "User updated successfully.");
@@ -111,6 +123,16 @@ const UserUpdatePage: React.FC = () => {
             />
           }
           label="Reset password"
+          labelPlacement="end"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={suspendUser}
+              onChange={() => setSuspendUser(!suspendUser)}
+            />
+          }
+          label="Suspend User"
           labelPlacement="end"
         />
         <Button
